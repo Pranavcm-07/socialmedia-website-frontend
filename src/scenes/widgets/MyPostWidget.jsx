@@ -25,7 +25,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPosts } from "state";
 
-const MyPostWidget = ({ picturepath }) => {
+const MyPostWidget = ({ picturePath }) => {
   const dispatch = useDispatch();
   const [isImage, setIsImage] = useState(false);
   const [image, setImage] = useState(null);
@@ -43,7 +43,7 @@ const MyPostWidget = ({ picturepath }) => {
     formData.append("description", post);
     if (image) {
       formData.append("picture", image);
-      formData.append("picturepath", image.name);
+      formData.append("picturePath", image.name);
     }
 
     const response = await fetch(`http://localhost:3001/posts`, {
@@ -60,7 +60,7 @@ const MyPostWidget = ({ picturepath }) => {
   return (
     <WidgetWrapper>
       <FlexBetween gap="1.5rem">
-        <UserImage image={picturepath} />
+        <UserImage image={picturePath} />
         <InputBase
           placeholder="What's on your mind..."
           onChange={(e) => setPost(e.target.value)}

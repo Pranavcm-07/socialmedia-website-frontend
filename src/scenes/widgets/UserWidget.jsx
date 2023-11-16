@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const UserWidget = ({ userId, picturepath }) => {
+const UserWidget = ({ userId, picturePath }) => {
   const [user, setUser] = useState(null);
   const { palette } = useTheme();
   const navigate = useNavigate();
@@ -39,11 +39,11 @@ const UserWidget = ({ userId, picturepath }) => {
   }
 
   const {
-    firstname,
-    lastname,
+    firstName,
+    lastName,
     location,
     occupation,
-    viewedprofile,
+    viewedProfile,
     impressions,
     friends,
   } = user;
@@ -57,7 +57,7 @@ const UserWidget = ({ userId, picturepath }) => {
         onClick={() => navigate(`/profile/${userId}`)}
       >
         <FlexBetween gap="1rem">
-          <UserImage image={picturepath} />
+          <UserImage image={picturePath} />
           <Box>
             <Typography
               variant="h4"
@@ -70,7 +70,7 @@ const UserWidget = ({ userId, picturepath }) => {
                 },
               }}
             >
-              {firstname} {lastname}
+              {firstName} {lastName}
             </Typography>
             <Typography color={medium}>{friends.length} friends</Typography>
           </Box>
@@ -99,7 +99,7 @@ const UserWidget = ({ userId, picturepath }) => {
         <FlexBetween mb="0.5rem">
           <Typography color={medium}>Who's viewed your profile</Typography>
           <Typography color={main} fontWeight="500">
-            {viewedprofile}
+            {viewedProfile}
           </Typography>
         </FlexBetween>
         <FlexBetween>

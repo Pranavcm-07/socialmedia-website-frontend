@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   IconButton,
@@ -25,11 +25,12 @@ import { setMode, setLogout } from "state";
 import { useNavigate } from "react-router-dom";
 import FlexBetween from "components/FlexBetween";
 
-const Navbar = () => {
+const Navbar = ({ searching }) => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
+  const [search, setSearch] = useState("");
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
 
   const theme = useTheme();
@@ -39,7 +40,13 @@ const Navbar = () => {
   const primaryLight = theme.palette.primary.light;
   const alt = theme.palette.background.alt;
 
-  const fullName = `pranav`;
+  const fullName = `${user.firstName} ${user.lastName}`;
+  const HandleSearch = (e) => {
+    setSearch(e.target.value);
+  };
+  useEffect(() => {
+    searching(search);
+  }, [search]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <FlexBetween padding="1rem 6%" backgroundColor={alt}>
@@ -65,7 +72,7 @@ const Navbar = () => {
             gap="3rem"
             padding="0.1rem 1.5rem"
           >
-            <InputBase placeholder="Search..." />
+            <InputBase placeholder="Search..." onChange={HandleSearch} />
             <IconButton>
               <Search />
             </IconButton>
