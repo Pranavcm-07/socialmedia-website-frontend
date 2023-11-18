@@ -63,7 +63,7 @@ const Navbar = ({ searching }) => {
             },
           }}
         >
-          Sociopedia
+          Connectify
         </Typography>
         {isNonMobileScreens && (
           <FlexBetween

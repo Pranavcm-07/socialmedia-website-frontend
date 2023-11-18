@@ -11,6 +11,9 @@ import UserWidget from "scenes/widgets/UserWidget";
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
   const [search, setSearch] = useState("");
+  const [profileUser, setProfileUser] = useState(false);
+  const currentUser = useSelector((state) => state.user);
+  var isCurrentUser;
   const { userId } = useParams();
   const token = useSelector((state) => state.token);
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
@@ -22,6 +25,8 @@ const ProfilePage = () => {
     });
     const data = await response.json();
     setUser(data);
+    isCurrentUser = (await data?.firstName) === currentUser?.firstName;
+    setProfileUser(isCurrentUser);
   };
 
   useEffect(() => {
@@ -53,7 +58,8 @@ const ProfilePage = () => {
           flexBasis={isNonMobileScreens ? "42%" : undefined}
           mt={isNonMobileScreens ? undefined : "2rem"}
         >
-          <MyPostWidget picturePath={user.picturePath} />
+          {profileUser && <MyPostWidget picturePath={user.picturePath} />}
+
           <Box m="2rem 0" />
           <PostsWidget search={search} userId={userId} isProfile />
         </Box>
