@@ -48,6 +48,7 @@ const initialValuesLogin = {
 
 const Form = () => {
   const [pageType, setPageType] = useState("login");
+  const [islogin, setIsLogin] = useState(true);
   const { palette } = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -86,7 +87,7 @@ const Form = () => {
     });
     const loggedIn = await loggedInResponse.json();
     onSubmitProps.resetForm();
-    if (loggedIn) {
+    if (loggedIn.user) {
       dispatch(
         setLogin({
           user: loggedIn.user,
@@ -94,12 +95,17 @@ const Form = () => {
         })
       );
       navigate("/home");
+    } else {
+      setIsLogin(false);
     }
   };
 
   const handleFormSubmit = async (values, onSubmitProps) => {
     if (isLogin) await login(values, onSubmitProps);
     if (isRegister) await register(values, onSubmitProps);
+  };
+  const handleFocus = () => {
+    setIsLogin(true);
   };
 
   return (
@@ -208,11 +214,26 @@ const Form = () => {
                 </Box>
               </>
             )}
-
+            {!islogin && (
+              <Box
+                backgroundColor={"red"}
+                color={"white"}
+                p={"1rem"}
+                mb={"1rem"}
+                gridColumn={"span 4"}
+                borderRadius={"10px"}
+              >
+                <Typography textAlign={"center"}>
+                  Wrong credentials. Please provide a valid email address and
+                  password.
+                </Typography>
+              </Box>
+            )}
             <TextField
               label="Email"
               onBlur={handleBlur}
               onChange={handleChange}
+              onFocus={handleFocus}
               value={values.email}
               name="email"
               error={Boolean(touched.email) && Boolean(errors.email)}
@@ -224,6 +245,7 @@ const Form = () => {
               type="password"
               onBlur={handleBlur}
               onChange={handleChange}
+              onFocus={handleFocus}
               value={values.password}
               name="password"
               error={Boolean(touched.password) && Boolean(errors.password)}
