@@ -75,6 +75,8 @@ const PostWidget = ({
           userId: loggedInUserId,
           userPicturePath: user.picturePath,
           comment: userComment,
+          firstName: user.firstName,
+          lastName: user.lastName,
         }),
       }
     );
@@ -184,10 +186,19 @@ const PostWidget = ({
                       image={userComment.userPicturePath}
                       size="20px"
                     />
-                    <Typography sx={{ color: main, m: "0.5rem 0", pl: "1rem" }}>
-                      {userComment.comment}
+                    <Typography
+                      sx={{
+                        color: palette.neutral.mediumMain,
+                        m: "0.5rem 0 0.2rem 0",
+                        pl: "0.5rem",
+                      }}
+                    >
+                      {userComment.firstName} {userComment.lastName}
                     </Typography>
                   </Box>
+                  <Typography sx={{ color: main, m: "0 0 0.2rem 1.6rem" }}>
+                    {userComment.comment}
+                  </Typography>
                 </Box>
               ))
               .reverse()}
