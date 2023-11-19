@@ -4,11 +4,20 @@ import {
   FavoriteOutlined,
   ShareOutlined,
 } from "@mui/icons-material";
-import { Box, Divider, IconButton, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  Divider,
+  IconButton,
+  Typography,
+  useTheme,
+  TextField,
+  Button,
+} from "@mui/material";
 import FlexBetween from "components/FlexBetween";
+import UserImage from "components/UserImage";
 import Friend from "components/Friend";
 import WidgetWrapper from "components/WidgetWrapper";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPost } from "state";
 
@@ -25,6 +34,9 @@ const PostWidget = ({
   search,
 }) => {
   const [isComments, setIsComments] = useState(false);
+  const [userComment, setUserComment] = useState("");
+  const user = useSelector((state) => state.user);
+  const [loadedComments, setLoadedComments] = useState(comments);
   const dispatch = useDispatch();
   const token = useSelector((state) => state.token);
   const loggedInUserId = useSelector((state) => state.user._id);
@@ -50,6 +62,43 @@ const PostWidget = ({
     const updatedPost = await response.json();
     dispatch(setPost({ post: updatedPost }));
   };
+  const handleComment = async () => {
+    const response = await fetch(
+      `http://localhost:3001/posts/${postId}/comments`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: loggedInUserId,
+          userPicturePath: user.picturePath,
+          comment: userComment,
+        }),
+      }
+    );
+    const postComment = await response.json();
+    setUserComment("");
+    setLoadedComments(postComment);
+  };
+  useEffect(() => {
+    const getComments = async () => {
+      const response = await fetch(
+        `http://localhost:3001/posts/${postId}/get/comments`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const getComment = await response.json();
+      setLoadedComments(getComment);
+    };
+    getComments();
+  }, [postId, token, comments]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     isMatch && (
@@ -60,7 +109,7 @@ const PostWidget = ({
           subtitle={location}
           userPicturePath={userPicturePath}
         />
-        <Typography color={main} sx={{ mt: "1rem" }}>
+        <Typography color={main} sx={{ mt: "1rem", pl: "10px" }}>
           {description}
         </Typography>
         {picturePath && (
@@ -89,7 +138,7 @@ const PostWidget = ({
               <IconButton onClick={() => setIsComments(!isComments)}>
                 <ChatBubbleOutlineOutlined />
               </IconButton>
-              <Typography>{comments.length}</Typography>
+              <Typography>{loadedComments.comments?.length}</Typography>
             </FlexBetween>
           </FlexBetween>
 
@@ -99,15 +148,49 @@ const PostWidget = ({
         </FlexBetween>
         {isComments && (
           <Box mt="0.5rem">
-            {comments.map((comment, i) => (
-              <Box key={`${name}-${i}`}>
-                <Divider />
-                <Typography sx={{ color: main, m: "0.5rem 0", pl: "1rem" }}>
-                  {comment}
-                </Typography>
-              </Box>
-            ))}
+            <FlexBetween sx={{ mt: "1rem", mb: "1rem" }}>
+              <TextField
+                id="my-text-field"
+                label=""
+                name="userComment"
+                variant="outlined"
+                placeholder="Add your Comment"
+                size="small"
+                value={userComment}
+                sx={{ p: "5 rem", width: "85%", mt: "1 rem" }}
+                onChange={(e) => {
+                  setUserComment(e.target.value);
+                }}
+              />
+              <Button
+                disabled={!userComment}
+                onClick={handleComment}
+                sx={{
+                  color: palette.background.alt,
+                  backgroundColor: palette.primary.main,
+                  borderRadius: "3rem",
+                }}
+              >
+                Post
+              </Button>
+            </FlexBetween>
             <Divider />
+            {loadedComments.comments
+              ?.map((userComment, i) => (
+                <Box key={`${name}-${i}`}>
+                  <Divider />
+                  <Box display={"flex"} alignItems={"center"}>
+                    <UserImage
+                      image={userComment.userPicturePath}
+                      size="20px"
+                    />
+                    <Typography sx={{ color: main, m: "0.5rem 0", pl: "1rem" }}>
+                      {userComment.comment}
+                    </Typography>
+                  </Box>
+                </Box>
+              ))
+              .reverse()}
           </Box>
         )}
       </WidgetWrapper>
