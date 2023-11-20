@@ -6,7 +6,7 @@ import { setFriends } from "state";
 import FlexBetween from "./FlexBetween";
 import UserImage from "./UserImage";
 
-const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
+const Friend = ({ friendId, name, subtitle, userPicturePath, createdAt }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { _id } = useSelector((state) => state.user);
@@ -14,6 +14,7 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
   const friends = useSelector((state) => state.user.friends);
 
   const { palette } = useTheme();
+  const primaryVeryLight = palette.primary.veryLight;
   const primaryLight = palette.primary.light;
   const primaryDark = palette.primary.dark;
   const main = palette.neutral.main;
@@ -46,19 +47,24 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
             navigate(0);
           }}
         >
-          <Typography
-            color={main}
-            variant="h5"
-            fontWeight="500"
-            sx={{
-              "&:hover": {
-                color: palette.primary.light,
-                cursor: "pointer",
-              },
-            }}
-          >
-            {name}
-          </Typography>
+          <Box display="flex" gap="10px" alignItems="center">
+            <Typography
+              color={main}
+              variant="h5"
+              fontWeight="500"
+              sx={{
+                "&:hover": {
+                  color: palette.primary.light,
+                  cursor: "pointer",
+                },
+              }}
+            >
+              {name}
+            </Typography>
+            <Typography fontSize="11px" fontWeight="100">
+              {createdAt}
+            </Typography>
+          </Box>
           <Typography color={medium} fontSize="0.75rem">
             {subtitle}
           </Typography>
@@ -67,7 +73,11 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
       {_id !== friendId && (
         <IconButton
           onClick={() => patchFriend()}
-          sx={{ backgroundColor: primaryLight, p: "0.6rem" }}
+          sx={{
+            backgroundColor: primaryVeryLight,
+            p: "0.6rem",
+            "&:hover": { backgroundColor: primaryLight },
+          }}
         >
           {isFriend ? (
             <PersonRemoveOutlined sx={{ color: primaryDark }} />

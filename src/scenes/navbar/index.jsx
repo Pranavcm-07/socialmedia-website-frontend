@@ -35,7 +35,7 @@ const Navbar = ({ searching }) => {
 
   const theme = useTheme();
   const neutralLight = theme.palette.neutral.light;
-  const dark = theme.palette.neutral.dark;
+  const primaryMain = theme.palette.primary.main;
   const background = theme.palette.background.default;
   const primaryLight = theme.palette.primary.light;
   const alt = theme.palette.background.alt;
@@ -85,14 +85,14 @@ const Navbar = ({ searching }) => {
         <FlexBetween gap="2rem">
           <IconButton onClick={() => dispatch(setMode())}>
             {theme.palette.mode === "dark" ? (
-              <DarkMode sx={{ fontSize: "25px" }} />
+              <DarkMode sx={{ fontSize: "25px", color: primaryMain }} />
             ) : (
-              <LightMode sx={{ color: dark, fontSize: "25px" }} />
+              <LightMode sx={{ color: primaryMain, fontSize: "25px" }} />
             )}
           </IconButton>
-          <Message sx={{ fontSize: "25px" }} />
-          <Notifications sx={{ fontSize: "25px" }} />
-          <Help sx={{ fontSize: "25px" }} />
+          <Message sx={{ fontSize: "25px", color: primaryMain }} />
+          <Notifications sx={{ fontSize: "25px", color: primaryMain }} />
+          <Help sx={{ fontSize: "25px", color: primaryMain }} />
           <FormControl variant="standard" value={fullName}>
             <Select
               value={fullName}
@@ -160,14 +160,14 @@ const Navbar = ({ searching }) => {
               sx={{ fontSize: "25px" }}
             >
               {theme.palette.mode === "dark" ? (
-                <DarkMode sx={{ fontSize: "25px" }} />
+                <DarkMode sx={{ fontSize: "25px", color: primaryMain }} />
               ) : (
-                <LightMode sx={{ color: dark, fontSize: "25px" }} />
+                <LightMode sx={{ color: primaryMain, fontSize: "25px" }} />
               )}
             </IconButton>
-            <Message sx={{ fontSize: "25px" }} />
-            <Notifications sx={{ fontSize: "25px" }} />
-            <Help sx={{ fontSize: "25px" }} />
+            <Message sx={{ fontSize: "25px", color: primaryMain }} />
+            <Notifications sx={{ fontSize: "25px", color: primaryMain }} />
+            <Help sx={{ fontSize: "25px", color: primaryMain }} />
             <FormControl variant="standard" value={fullName}>
               <Select
                 value={fullName}

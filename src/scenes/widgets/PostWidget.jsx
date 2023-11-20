@@ -32,6 +32,7 @@ const PostWidget = ({
   likes,
   comments,
   search,
+  createdAt,
 }) => {
   const [isComments, setIsComments] = useState(false);
   const [userComment, setUserComment] = useState("");
@@ -110,6 +111,7 @@ const PostWidget = ({
           name={name}
           subtitle={location}
           userPicturePath={userPicturePath}
+          createdAt={createdAt}
         />
         <Typography color={main} sx={{ mt: "1rem", pl: "10px" }}>
           {description}
@@ -171,6 +173,9 @@ const PostWidget = ({
                   color: palette.background.alt,
                   backgroundColor: palette.primary.main,
                   borderRadius: "3rem",
+                  "&:hover": {
+                    backgroundColor: palette.primary.light,
+                  },
                 }}
               >
                 Post
@@ -189,7 +194,7 @@ const PostWidget = ({
                     <Typography
                       sx={{
                         color: palette.neutral.mediumMain,
-                        m: "0.5rem 0 0.2rem 0",
+                        m: "0.5rem 0",
                         pl: "0.5rem",
                       }}
                     >
