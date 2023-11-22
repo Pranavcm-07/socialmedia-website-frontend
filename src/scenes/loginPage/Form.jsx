@@ -217,7 +217,7 @@ const Form = () => {
                 </Box>
               </>
             )}
-            {!islogin && (
+            {!islogin && isLogin && (
               <Box
                 backgroundColor={"red"}
                 color={"white"}
