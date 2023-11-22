@@ -6,7 +6,14 @@ import { setFriends } from "state";
 import FlexBetween from "./FlexBetween";
 import UserImage from "./UserImage";
 
-const Friend = ({ friendId, name, subtitle, userPicturePath, createdAt }) => {
+const Friend = ({
+  friendId,
+  name,
+  subtitle,
+  userPicturePath,
+  createdAt,
+  isPost = false,
+}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { _id } = useSelector((state) => state.user);
@@ -36,6 +43,31 @@ const Friend = ({ friendId, name, subtitle, userPicturePath, createdAt }) => {
     const data = await response.json();
     dispatch(setFriends({ friends: data }));
   };
+  const currentDate = new Date();
+  const postDate = new Date(createdAt);
+  const timeDifferene = currentDate - postDate;
+  const getTimeDifference = (timeDifferene) => {
+    const seconds = Math.floor(timeDifferene / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    const months = Math.floor(days / 30);
+    const years = Math.floor(months / 12);
+    if (seconds < 60) {
+      return `${seconds} s`;
+    } else if (minutes <= 60) {
+      return `${minutes} mins`;
+    } else if (hours <= 24) {
+      return `${hours} hours`;
+    } else if (days <= 30) {
+      return `${days} days`;
+    } else if (months <= 12) {
+      return `${months} months`;
+    } else {
+      return `${years} years`;
+    }
+  };
+  const finalTimeDifference = getTimeDifference(timeDifferene);
 
   return (
     <FlexBetween>
@@ -61,9 +93,11 @@ const Friend = ({ friendId, name, subtitle, userPicturePath, createdAt }) => {
             >
               {name}
             </Typography>
-            <Typography fontSize="11px" fontWeight="100">
-              {createdAt}
-            </Typography>
+            {isPost && (
+              <Typography fontSize="11px" fontWeight="100">
+                {finalTimeDifference}
+              </Typography>
+            )}
           </Box>
           <Typography color={medium} fontSize="0.75rem">
             {subtitle}

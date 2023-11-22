@@ -115,6 +115,7 @@ const PostWidget = ({
           subtitle={location}
           userPicturePath={userPicturePath}
           createdAt={createdAt}
+          isPost
         />
         <Typography color={main} sx={{ mt: "1rem", pl: "10px" }}>
           {description}
