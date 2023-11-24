@@ -3,6 +3,7 @@ import {
   FavoriteBorderOutlined,
   FavoriteOutlined,
   ShareOutlined,
+  DeleteOutlined,
 } from "@mui/icons-material";
 import {
   Box,
@@ -88,6 +89,20 @@ const PostWidget = ({
     setUserComment("");
     setLoadedComments(postComment);
   };
+  const handleDelete = async () => {
+    const response = await fetch(
+      `https://connectify-wewf.onrender.com/${postId}/delete`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const data = await response;
+    console.log(data);
+  };
   useEffect(() => {
     const getComments = async () => {
       const response = await fetch(
@@ -148,6 +163,9 @@ const PostWidget = ({
               </IconButton>
               <Typography>{loadedComments.comments?.length}</Typography>
             </FlexBetween>
+            <IconButton onClick={handleDelete}>
+              <DeleteOutlined />
+            </IconButton>
           </FlexBetween>
 
           <IconButton>
