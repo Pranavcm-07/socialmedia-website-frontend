@@ -20,7 +20,7 @@ import Friend from "components/Friend";
 import WidgetWrapper from "components/WidgetWrapper";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setPost } from "state";
+import { setDeletePost, setPost } from "state";
 
 const PostWidget = ({
   postId,
@@ -98,10 +98,11 @@ const PostWidget = ({
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({ postId }),
       }
     );
-    const data = await response;
-    console.log(data);
+    const data = await response.json();
+    dispatch(setDeletePost({ postId: data }));
   };
   useEffect(() => {
     const getComments = async () => {
