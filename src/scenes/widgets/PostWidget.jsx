@@ -91,7 +91,7 @@ const PostWidget = ({
   };
   const handleDelete = async () => {
     const response = await fetch(
-      `https://connectify-wewf.onrender.com/${postId}/delete`,
+      `https://connectify-wewf.onrender.com/posts/${postId}/delete`,
       {
         method: "DELETE",
         headers: {
@@ -102,7 +102,7 @@ const PostWidget = ({
       }
     );
     const data = await response.json();
-    dispatch(setDeletePost({ postId: data }));
+    dispatch(setDeletePost({ post: data }));
   };
   useEffect(() => {
     const getComments = async () => {

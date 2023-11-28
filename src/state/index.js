@@ -40,7 +40,7 @@ export const authSlice = createSlice({
       state.posts = updatedPosts;
     },
     setDeletePost: (state, action) => {
-      const updatedPost = state.posts.map((post) => {
+      const updatedPost = state.posts.filter((post) => {
         return post._id !== action.payload.post._id;
       });
       state.posts = updatedPost;
