@@ -164,9 +164,11 @@ const PostWidget = ({
               </IconButton>
               <Typography>{loadedComments.comments?.length}</Typography>
             </FlexBetween>
-            <IconButton onClick={handleDelete}>
-              <DeleteOutlined />
-            </IconButton>
+            {loggedInUserId === postUserId && (
+              <IconButton onClick={handleDelete}>
+                <DeleteOutlined />
+              </IconButton>
+            )}
           </FlexBetween>
 
           <IconButton>
