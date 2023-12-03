@@ -64,13 +64,16 @@ const MyPostWidget = ({ picturePath }) => {
 
   const getSignature = async (folder) => {
     try {
-      const res = await fetch(`http://localhost:3001/auth/signature`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ folder: `${folder}` }),
-      });
+      const res = await fetch(
+        `https://connectify-wewf.onrender.com/auth/signature`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ folder: `${folder}` }),
+        }
+      );
       const data = await res.json();
       return data;
     } catch (err) {
@@ -90,7 +93,7 @@ const MyPostWidget = ({ picturePath }) => {
       formData.append("picturePath", imgUrl);
     }
 
-    const response = await fetch(`http://localhost:3001/posts`, {
+    const response = await fetch(`https://connectify-wewf.onrender.com/posts`, {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },
       body: formData,

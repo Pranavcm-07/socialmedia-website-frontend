@@ -90,7 +90,7 @@ const Form = () => {
     formData.append("picturePath", imgUrl);
 
     const savedUserResponse = await fetch(
-      "http://localhost:3001/auth/register",
+      "https://connectify-wewf.onrender.com/auth/register",
       {
         method: "POST",
         body: formData,
@@ -106,13 +106,16 @@ const Form = () => {
 
   const getSignature = async (folder) => {
     try {
-      const res = await fetch(`http://localhost:3001/auth/signature`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ folder: `${folder}` }),
-      });
+      const res = await fetch(
+        `https://connectify-wewf.onrender.com/auth/signature`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ folder: `${folder}` }),
+        }
+      );
       const data = await res.json();
       return data;
     } catch (err) {
@@ -121,11 +124,14 @@ const Form = () => {
   };
 
   const login = async (values, onSubmitProps) => {
-    const loggedInResponse = await fetch("http://localhost:3001/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(values),
-    });
+    const loggedInResponse = await fetch(
+      "https://connectify-wewf.onrender.com/auth/login",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      }
+    );
     const loggedIn = await loggedInResponse.json();
     onSubmitProps.resetForm();
     if (loggedIn.user) {
