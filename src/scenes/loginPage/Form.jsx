@@ -56,16 +56,41 @@ const Form = () => {
   const isLogin = pageType === "login";
   const isRegister = pageType === "register";
 
-  const register = async (values, onSubmitProps) => {
+  const uploadImage = async (values, timestamp, signature) => {
+    const cloudData = new FormData();
+    cloudData.append("file", values.picture);
+    cloudData.append("timestamp", timestamp);
+    cloudData.append("signature", signature);
+    cloudData.append("api_key", process.env.REACT_APP_CLOUDINARY_API_KEY);
+    cloudData.append("folder", "images");
+    try {
+      const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME;
+      const resourceType = "image";
+
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`,
+        {
+          method: "POST",
+          body: cloudData,
+        }
+      );
+      const { secure_url } = await res.json();
+      return secure_url;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const register = async (values, onSubmitProps, imgUrl) => {
     // this allows us to send form info with image
     const formData = new FormData();
     for (let value in values) {
       formData.append(value, values[value]);
     }
-    formData.append("picturePath", values.picture.name);
+    formData.append("picturePath", imgUrl);
 
     const savedUserResponse = await fetch(
-      "https://connectify-wewf.onrender.com/auth/register",
+      "http://localhost:3001/auth/register",
       {
         method: "POST",
         body: formData,
@@ -79,15 +104,28 @@ const Form = () => {
     }
   };
 
-  const login = async (values, onSubmitProps) => {
-    const loggedInResponse = await fetch(
-      "https://connectify-wewf.onrender.com/auth/login",
-      {
+  const getSignature = async (folder) => {
+    try {
+      const res = await fetch(`http://localhost:3001/auth/signature`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      }
-    );
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ folder: `${folder}` }),
+      });
+      const data = await res.json();
+      return data;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const login = async (values, onSubmitProps) => {
+    const loggedInResponse = await fetch("http://localhost:3001/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(values),
+    });
     const loggedIn = await loggedInResponse.json();
     onSubmitProps.resetForm();
     if (loggedIn.user) {
@@ -105,7 +143,12 @@ const Form = () => {
 
   const handleFormSubmit = async (values, onSubmitProps) => {
     if (isLogin) await login(values, onSubmitProps);
-    if (isRegister) await register(values, onSubmitProps);
+    if (isRegister) {
+      const { timestamp: imgTimeStamp, signature: imgSignature } =
+        await getSignature("images");
+      const imgUrl = await uploadImage(values, imgTimeStamp, imgSignature);
+      await register(values, onSubmitProps, imgUrl);
+    }
   };
   const handleFocus = () => {
     setIsLogin(true);

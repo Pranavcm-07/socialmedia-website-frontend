@@ -8,7 +8,7 @@ const UserImage = ({ image, size = "60px" }) => {
         width={size}
         height={size}
         alt="user"
-        src={`https://connectify-wewf.onrender.com/assets/${image}`}
+        src={`${image}`}
       />
     </Box>
   );
