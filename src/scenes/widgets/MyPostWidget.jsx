@@ -37,13 +37,57 @@ const MyPostWidget = ({ picturePath }) => {
   const mediumMain = palette.neutral.mediumMain;
   const medium = palette.neutral.medium;
 
+  const uploadImage = async (file, timestamp, signature) => {
+    const cloudData = new FormData();
+    cloudData.append("file", file);
+    cloudData.append("timestamp", timestamp);
+    cloudData.append("signature", signature);
+    cloudData.append("api_key", process.env.REACT_APP_CLOUDINARY_API_KEY);
+    cloudData.append("folder", "images");
+    try {
+      const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME;
+      const resourceType = "image";
+
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`,
+        {
+          method: "POST",
+          body: cloudData,
+        }
+      );
+      const { secure_url } = await res.json();
+      return secure_url;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getSignature = async (folder) => {
+    try {
+      const res = await fetch(`http://localhost:3001/auth/signature`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ folder: `${folder}` }),
+      });
+      const data = await res.json();
+      return data;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const handlePost = async () => {
+    const { timestamp: imgTimeStamp, signature: imgSignature } =
+      await getSignature("images");
+    const imgUrl = await uploadImage(image, imgTimeStamp, imgSignature);
     const formData = new FormData();
     formData.append("userId", _id);
     formData.append("description", post);
     if (image) {
       formData.append("picture", image);
-      formData.append("picturePath", image.name);
+      formData.append("picturePath", imgUrl);
     }
 
     const response = await fetch(`http://localhost:3001/posts`, {
