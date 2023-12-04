@@ -54,12 +54,8 @@ const UserWidget = ({ userId, picturePath }) => {
   return (
     <WidgetWrapper>
       {/* FIRST ROW */}
-      <FlexBetween
-        gap="0.5rem"
-        pb="1.1rem"
-        onClick={() => navigate(`/profile/${userId}`)}
-      >
-        <FlexBetween gap="1rem">
+      <FlexBetween gap="0.5rem" pb="1.1rem">
+        <FlexBetween gap="1rem" onClick={() => navigate(`/profile/${userId}`)}>
           <UserImage image={picturePath} />
           <Box>
             <Typography
@@ -78,7 +74,9 @@ const UserWidget = ({ userId, picturePath }) => {
             <Typography color={medium}>{friends.length} friends</Typography>
           </Box>
         </FlexBetween>
-        <ManageAccountsOutlined />
+        <ManageAccountsOutlined
+          onClick={() => navigate(`/edit/profile/${userId}`)}
+        />
       </FlexBetween>
 
       <Divider />

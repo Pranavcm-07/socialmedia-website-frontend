@@ -82,13 +82,13 @@ const MyPostWidget = ({ picturePath }) => {
   };
 
   const handlePost = async () => {
-    const { timestamp: imgTimeStamp, signature: imgSignature } =
-      await getSignature("images");
-    const imgUrl = await uploadImage(image, imgTimeStamp, imgSignature);
     const formData = new FormData();
     formData.append("userId", _id);
     formData.append("description", post);
     if (image) {
+      const { timestamp: imgTimeStamp, signature: imgSignature } =
+        await getSignature("images");
+      const imgUrl = await uploadImage(image, imgTimeStamp, imgSignature);
       formData.append("picture", image);
       formData.append("picturePath", imgUrl);
     }
