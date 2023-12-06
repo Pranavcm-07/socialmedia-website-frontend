@@ -154,7 +154,7 @@ const MyPostWidget = ({ picturePath }) => {
                 {image && (
                   <IconButton
                     onClick={() => setImage(null)}
-                    sx={{ width: "15%" }}
+                    sx={{ ml: "1rem" }}
                   >
                     <DeleteOutlined />
                   </IconButton>

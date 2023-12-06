@@ -3,8 +3,11 @@ import {
   EditOutlined,
   LocationOnOutlined,
   WorkOutlineOutlined,
+  DeleteOutlined,
+  CheckCircleOutlined,
 } from "@mui/icons-material";
-import { Box, Typography, Divider, useTheme } from "@mui/material";
+import { Box, Typography, Divider, useTheme, IconButton } from "@mui/material";
+import Dropzone from "react-dropzone";
 import UserImage from "components/UserImage";
 import FlexBetween from "components/FlexBetween";
 import WidgetWrapper from "components/WidgetWrapper";
@@ -13,6 +16,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const UserWidget = ({ userId, picturePath }) => {
+  const [isEditProfile, setIsEditProfile] = useState(false);
+  const [image, setImage] = useState(null);
   const [user, setUser] = useState(null);
   const { palette } = useTheme();
   const navigate = useNavigate();
@@ -31,6 +36,73 @@ const UserWidget = ({ userId, picturePath }) => {
     );
     const data = await response.json();
     setUser(data);
+  };
+
+  const uploadImage = async (file, timestamp, signature) => {
+    const cloudData = new FormData();
+    cloudData.append("file", file);
+    cloudData.append("timestamp", timestamp);
+    cloudData.append("signature", signature);
+    cloudData.append("api_key", process.env.REACT_APP_CLOUDINARY_API_KEY);
+    cloudData.append("folder", "images");
+    try {
+      const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME;
+      const resourceType = "image";
+
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`,
+        {
+          method: "POST",
+          body: cloudData,
+        }
+      );
+      const { secure_url } = await res.json();
+      return secure_url;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getSignature = async (folder) => {
+    try {
+      const res = await fetch(
+        `https://connectify-wewf.onrender.com/auth/signature`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ folder: `${folder}` }),
+        }
+      );
+      const data = await res.json();
+      return data;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleEditProfileImage = async () => {
+    const imageData = new FormData();
+    if (image) {
+      const { timestamp: imgTimeStamp, signature: imgSignature } =
+        await getSignature("images");
+      const imgUrl = await uploadImage(image, imgTimeStamp, imgSignature);
+      imageData.append("picture", image);
+      imageData.append("picturePath", imgUrl);
+    }
+    const response = await fetch(
+      `https://connectify-wewf.onrender.com/users/${userId}/editprofile`,
+      {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` },
+        body: imageData,
+      }
+    );
+
+    const data = await response.json();
+    setUser(data);
+    navigate(0);
   };
 
   useEffect(() => {
@@ -75,9 +147,67 @@ const UserWidget = ({ userId, picturePath }) => {
           </Box>
         </FlexBetween>
         <ManageAccountsOutlined
-          onClick={() => navigate(`/edit/profile/${userId}`)}
+          onClick={() => setIsEditProfile(!isEditProfile)}
         />
       </FlexBetween>
+      {isEditProfile && (
+        <Box border={`1px solid ${medium}`} borderRadius="5px" p="0.5rem">
+          <Dropzone
+            acceptedFiles=".jpg,.jpeg,.png"
+            multiple={false}
+            onDrop={(acceptedFiles) => setImage(acceptedFiles[0])}
+          >
+            {({ getRootProps, getInputProps }) => (
+              <FlexBetween>
+                <Box
+                  {...getRootProps()}
+                  border={`2px dashed ${palette.primary.main}`}
+                  p="0.4rem"
+                  width="100%"
+                  sx={{ "&:hover": { cursor: "pointer" } }}
+                >
+                  <input {...getInputProps()} />
+                  {!image ? (
+                    <p
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      Update Image
+                    </p>
+                  ) : (
+                    <FlexBetween>
+                      <Typography>
+                        {image.name.length > 20
+                          ? `${image.name.slice(0, 20)}...`
+                          : image.name}
+                      </Typography>
+                      <EditOutlined />
+                    </FlexBetween>
+                  )}
+                </Box>
+                {image && (
+                  <Box display={"flex"} alignItems={"center"}>
+                    <IconButton
+                      onClick={() => setImage(null)}
+                      sx={{ ml: "5px" }}
+                    >
+                      <DeleteOutlined sx={{ width: "25px", height: "25px" }} />
+                    </IconButton>
+                    <IconButton onClick={handleEditProfileImage}>
+                      <CheckCircleOutlined
+                        sx={{ width: "25px", height: "25px" }}
+                      />
+                    </IconButton>
+                  </Box>
+                )}
+              </FlexBetween>
+            )}
+          </Dropzone>
+        </Box>
+      )}
 
       <Divider />
 
