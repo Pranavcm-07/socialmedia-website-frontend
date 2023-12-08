@@ -20,6 +20,7 @@ import { setPosts, setUpdatedUser } from "state";
 const UserWidget = ({ userId, picturePath }) => {
   const dispatch = useDispatch();
   const [isEditProfile, setIsEditProfile] = useState(false);
+  const [disable, setDisable] = useState(false);
   const [image, setImage] = useState(null);
   const [user, setUser] = useState(null);
   const { palette } = useTheme();
@@ -86,6 +87,7 @@ const UserWidget = ({ userId, picturePath }) => {
   };
 
   const handleEditProfileImage = async () => {
+    setDisable(true);
     const imageData = new FormData();
     if (image) {
       const { timestamp: imgTimeStamp, signature: imgSignature } =
@@ -102,12 +104,12 @@ const UserWidget = ({ userId, picturePath }) => {
         body: imageData,
       }
     );
-
     const { updatedUser, updatedPosts } = await response.json();
     dispatch(setUpdatedUser({ updatedUser }));
     dispatch(setPosts({ posts: updatedPosts }));
     setImage(null);
     setIsEditProfile(false);
+    setDisable(false);
   };
 
   useEffect(() => {
@@ -201,7 +203,10 @@ const UserWidget = ({ userId, picturePath }) => {
                     >
                       <DeleteOutlined sx={{ width: "25px", height: "25px" }} />
                     </IconButton>
-                    <IconButton onClick={handleEditProfileImage}>
+                    <IconButton
+                      onClick={handleEditProfileImage}
+                      disabled={disable}
+                    >
                       <CheckCircleOutlined
                         sx={{ width: "25px", height: "25px" }}
                       />

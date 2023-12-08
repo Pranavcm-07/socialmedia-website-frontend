@@ -30,6 +30,7 @@ const MyPostWidget = ({ picturePath }) => {
   const [isImage, setIsImage] = useState(false);
   const [image, setImage] = useState(null);
   const [post, setPost] = useState("");
+  const [disable, setDisable] = useState(false);
   const { palette } = useTheme();
   const { _id } = useSelector((state) => state.user);
   const token = useSelector((state) => state.token);
@@ -82,6 +83,7 @@ const MyPostWidget = ({ picturePath }) => {
   };
 
   const handlePost = async () => {
+    setDisable(false);
     const formData = new FormData();
     formData.append("userId", _id);
     formData.append("description", post);
@@ -102,6 +104,7 @@ const MyPostWidget = ({ picturePath }) => {
     dispatch(setPosts({ posts }));
     setImage(null);
     setPost("");
+    setDisable(false);
   };
 
   return (
@@ -110,7 +113,10 @@ const MyPostWidget = ({ picturePath }) => {
         <UserImage image={picturePath} />
         <InputBase
           placeholder="What's on your mind..."
-          onChange={(e) => setPost(e.target.value)}
+          onChange={(e) => {
+            setPost(e.target.value);
+            setDisable(true);
+          }}
           value={post}
           sx={{
             width: "100%",
@@ -202,7 +208,7 @@ const MyPostWidget = ({ picturePath }) => {
         )}
 
         <Button
-          disabled={!post}
+          disabled={!disable}
           onClick={handlePost}
           sx={{
             color: palette.background.alt,
