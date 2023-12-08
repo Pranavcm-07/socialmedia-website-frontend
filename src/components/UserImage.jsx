@@ -8,7 +8,11 @@ const UserImage = ({ image, size = "60px" }) => {
         width={size}
         height={size}
         alt="user"
-        src={`${image}`}
+        src={
+          image.includes("cloudinary")
+            ? `${image}`
+            : `https://connectify-wewf.onrender.com/assets/${image}`
+        }
       />
     </Box>
   );

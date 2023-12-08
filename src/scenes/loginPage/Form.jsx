@@ -47,6 +47,7 @@ const initialValuesLogin = {
 };
 
 const Form = () => {
+  const [disable, setDisable] = useState(false);
   const [pageType, setPageType] = useState("login");
   const [islogin, setIsLogin] = useState(true);
   const { palette } = useTheme();
@@ -101,6 +102,7 @@ const Form = () => {
 
     if (savedUser) {
       setPageType("login");
+      setDisable(false);
     }
   };
 
@@ -144,10 +146,12 @@ const Form = () => {
       navigate("/home");
     } else {
       setIsLogin(false);
+      setDisable(false);
     }
   };
 
   const handleFormSubmit = async (values, onSubmitProps) => {
+    setDisable(true);
     if (isLogin) await login(values, onSubmitProps);
     if (isRegister) {
       const { timestamp: imgTimeStamp, signature: imgSignature } =
@@ -321,11 +325,13 @@ const Form = () => {
                   backgroundColor: palette.primary.light,
                 },
               }}
+              disabled={disable}
             >
               {isLogin ? "LOGIN" : "REGISTER"}
             </Button>
             <Typography
               onClick={() => {
+                setDisable(false);
                 setPageType(isLogin ? "register" : "login");
                 resetForm();
               }}

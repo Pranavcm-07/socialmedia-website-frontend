@@ -93,8 +93,13 @@ const UserWidget = ({ userId, picturePath }) => {
       const { timestamp: imgTimeStamp, signature: imgSignature } =
         await getSignature("images");
       const imgUrl = await uploadImage(image, imgTimeStamp, imgSignature);
-      imageData.append("picture", image);
-      imageData.append("picturePath", imgUrl);
+      if (imgUrl) {
+        imageData.append("picture", image);
+        imageData.append("picturePath", imgUrl);
+      } else {
+        imageData.append("picture", image);
+        imageData.append("picturePath", "default-profile-pic.jpg");
+      }
     }
     const response = await fetch(
       `https://connectify-wewf.onrender.com/users/${userId}/editprofile`,
@@ -200,6 +205,7 @@ const UserWidget = ({ userId, picturePath }) => {
                     <IconButton
                       onClick={() => setImage(null)}
                       sx={{ ml: "5px" }}
+                      disabled={disable}
                     >
                       <DeleteOutlined sx={{ width: "25px", height: "25px" }} />
                     </IconButton>
