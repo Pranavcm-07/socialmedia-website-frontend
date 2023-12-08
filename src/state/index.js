@@ -11,6 +11,10 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    setUpdatedUser: (state, action) => {
+      const updatedUserPicturePath = action.payload.updatedUser.picturePath;
+      state.user.picturePath = updatedUserPicturePath;
+    },
     setMode: (state) => {
       state.mode = state.mode === "light" ? "dark" : "light";
     },
@@ -49,6 +53,7 @@ export const authSlice = createSlice({
 });
 
 export const {
+  setUpdatedUser,
   setMode,
   setLogin,
   setLogout,

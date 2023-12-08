@@ -14,8 +14,11 @@ import WidgetWrapper from "components/WidgetWrapper";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setPosts, setUpdatedUser } from "state";
 
 const UserWidget = ({ userId, picturePath }) => {
+  const dispatch = useDispatch();
   const [isEditProfile, setIsEditProfile] = useState(false);
   const [image, setImage] = useState(null);
   const [user, setUser] = useState(null);
@@ -100,9 +103,11 @@ const UserWidget = ({ userId, picturePath }) => {
       }
     );
 
-    const data = await response.json();
-    setUser(data);
-    navigate(0);
+    const { updatedUser, updatedPosts } = await response.json();
+    dispatch(setUpdatedUser({ updatedUser }));
+    dispatch(setPosts({ posts: updatedPosts }));
+    setImage(null);
+    setIsEditProfile(false);
   };
 
   useEffect(() => {
