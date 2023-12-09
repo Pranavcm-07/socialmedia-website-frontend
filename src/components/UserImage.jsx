@@ -9,7 +9,7 @@ const UserImage = ({ image, size = "60px" }) => {
         height={size}
         alt="user"
         src={
-          image.includes("cloudinary")
+          image && image.includes("cloudinary")
             ? `${image}`
             : `https://connectify-wewf.onrender.com/assets/${image}`
         }
