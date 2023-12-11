@@ -4,7 +4,6 @@ import {
   AttachFileOutlined,
   GifBoxOutlined,
   ImageOutlined,
-  MicOutlined,
   MoreHorizOutlined,
 } from "@mui/icons-material";
 import {
@@ -105,6 +104,7 @@ const MyPostWidget = ({ picturePath }) => {
     setImage(null);
     setPost("");
     setDisable(false);
+    setIsImage(false);
   };
 
   return (
@@ -149,7 +149,9 @@ const MyPostWidget = ({ picturePath }) => {
                 >
                   <input {...getInputProps()} />
                   {!image ? (
-                    <p>Add Image Here</p>
+                    <p style={{ display: "flex", justifyContent: "center" }}>
+                      Add Image Here
+                    </p>
                   ) : (
                     <FlexBetween>
                       <Typography>{image.name}</Typography>
@@ -194,11 +196,6 @@ const MyPostWidget = ({ picturePath }) => {
             <FlexBetween gap="0.25rem">
               <AttachFileOutlined sx={{ color: mediumMain }} />
               <Typography color={mediumMain}>Attachment</Typography>
-            </FlexBetween>
-
-            <FlexBetween gap="0.25rem">
-              <MicOutlined sx={{ color: mediumMain }} />
-              <Typography color={mediumMain}>Audio</Typography>
             </FlexBetween>
           </>
         ) : (
