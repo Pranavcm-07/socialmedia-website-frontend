@@ -143,7 +143,7 @@ const Form = () => {
           token: loggedIn.token,
         })
       );
-      navigate("/home");
+      navigate("/");
     } else {
       setIsLogin(false);
       setDisable(false);
