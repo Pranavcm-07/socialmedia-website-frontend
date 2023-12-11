@@ -29,6 +29,7 @@ const UserWidget = ({ userId, picturePath }) => {
   const dark = palette.neutral.dark;
   const medium = palette.neutral.medium;
   const main = palette.neutral.main;
+  const currentUser = useSelector((state) => state.user);
 
   const getUser = async () => {
     const response = await fetch(
@@ -126,6 +127,7 @@ const UserWidget = ({ userId, picturePath }) => {
   }
 
   const {
+    _id,
     firstName,
     lastName,
     location,
@@ -158,9 +160,11 @@ const UserWidget = ({ userId, picturePath }) => {
             <Typography color={medium}>{friends.length} friends</Typography>
           </Box>
         </FlexBetween>
-        <ManageAccountsOutlined
-          onClick={() => setIsEditProfile(!isEditProfile)}
-        />
+        {currentUser._id === _id && (
+          <ManageAccountsOutlined
+            onClick={() => setIsEditProfile(!isEditProfile)}
+          />
+        )}
       </FlexBetween>
       {isEditProfile && (
         <Box border={`1px solid ${medium}`} borderRadius="5px" p="0.5rem">
